@@ -1,9 +1,11 @@
-from sentence_transformers import SentenceTransformer
+import voyageai
+import os
+
+client = voyageai.Client(api_key=os.getenv("VOYAGE_API_KEY"))
 
 def load_model():
-    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
-    return model
+    return client
 
 def embed(text: str, model) -> list[float]:
-    embedding = model.encode(text, normalize_embeddings=True)
-    return embedding.tolist()
+    result = model.embed([text], model="voyage-3-lite", input_type="query")
+    return result.embeddings[0]
